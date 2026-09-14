@@ -52,20 +52,6 @@ export CROSS_PREFIX="/usr/local/mavericks-clang-${CLANG_LINE}-cross"
 export NATIVE_IDENTIFIER="dev.modernmavericks.clang.clang${CLANG_LINE}"
 export CROSS_IDENTIFIER="dev.modernmavericks.clang.clang${CLANG_LINE}-cross"
 
-# shipyard scripts dir for the shell callers (SDK fetch, compat guard, productbuild, build-info).
-# mavericks-shipyard is a find_package package INSTALLED to a prefix and self-registered in
-# CMake's user package registry -- it is NOT vendored. Resolve in the family's usual order:
-#   1. $MAVERICKS_SHARED_SCRIPTS override, else
-#   2. the user package registry entry (honors whatever --prefix it was installed to), else
-#   3. a sibling checkout (dev-only fallback).
-_mav_shared_scripts() {
-  if [ -n "${MAVERICKS_SHARED_SCRIPTS:-}" ] && [ -d "$MAVERICKS_SHARED_SCRIPTS" ]; then
-    printf '%s\n' "$MAVERICKS_SHARED_SCRIPTS"; return 0; fi
-  for _r in "$HOME/.cmake/packages/MavericksShipyard/"*; do
-    [ -f "$_r" ] || continue; _d="$(cat "$_r")/scripts"
-    [ -d "$_d" ] && { printf '%s\n' "$_d"; return 0; }; done
-  [ -d "$REPO_ROOT/../mavericks-shipyard/scripts" ] && \
-    { printf '%s\n' "$REPO_ROOT/../mavericks-shipyard/scripts"; return 0; }
-  return 1
-}
-SHIPYARD_SCRIPTS="$(_mav_shared_scripts || true)"; export SHIPYARD_SCRIPTS
+# $SHIPYARD / $SHIPYARD_SCRIPTS -- which build-cross.sh, the smoke tests and the packagers all read
+# after sourcing this file -- come from build/lib.sh above, which sources build/msc.sh. This file
+# used to resolve them a second time, its own way.

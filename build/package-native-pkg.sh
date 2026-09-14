@@ -43,7 +43,7 @@ if [ -n "$UPD_APP" ] && [ -d "$UPD_APP" ]; then
     --scripts-out "$scr"
   set -- --scripts "$scr"
 else
-  echo ">> WARNING: no updater at '$UPD_APP'; packaging the toolchain alone (build it: cmake --build build/updater --target ClangUpdater)" >&2
+  echo ">> WARNING: no updater at '$UPD_APP'; packaging the toolchain alone (build it: shipyard-cmake --build build/updater --target ClangUpdater)" >&2
   rm -rf "$PAYLOAD$UPD_DIR" "$PAYLOAD/Library/LaunchAgents/$UPD_LABEL.plist"
 fi
 

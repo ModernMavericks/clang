@@ -125,9 +125,9 @@ jobs:
       - name: Build the cross Sparkle updater (arm64/11)
         run: |
           set -eu
-          cmake -S . -B build/updater-cross -DCLANG_VARIANT=cross \
+          shipyard-cmake -S . -B build/updater-cross -DCLANG_VARIANT=cross \
             -DMAVERICKS_ALLOW_GENERIC_ICON=ON -DCMAKE_OBJC_COMPILER=/usr/bin/clang
-          cmake --build build/updater-cross --target ClangCrossUpdater
+          shipyard-cmake --build build/updater-cross --target ClangCrossUpdater
           # Self-update circularity: an updater that linked the toolchain it replaces could not run
           # while replacing it. Cocoa + Sparkle only.
           # `sed 1d` drops otool's header line, which is the binary's OWN PATH -- grepping it too
@@ -240,9 +240,9 @@ jobs:
       - name: Build the native Sparkle updater (x86_64/10.9)
         run: |
           set -eu
-          cmake -S . -B build/updater -DCLANG_VARIANT=native \
+          shipyard-cmake -S . -B build/updater -DCLANG_VARIANT=native \
             -DMAVERICKS_ALLOW_GENERIC_ICON=ON -DCMAKE_OBJC_COMPILER=/usr/bin/clang
-          cmake --build build/updater --target ClangUpdater
+          shipyard-cmake --build build/updater --target ClangUpdater
           # sed 1d: otool's header line is the binary's own path, not a dependency -- see the cross job.
           otool -L build/updater/ClangUpdater.app/Contents/MacOS/ClangUpdater | tee /tmp/o-all.txt | sed 1d > /tmp/o.txt
           cat /tmp/o-all.txt

@@ -30,7 +30,7 @@ mkdir -p "$CROSS_STAGE/SDKs"
 echo "==> 2. native TableGen (arm64, Apple clang) -- the only build-time-executed tools"
 TBLGEN_BLD="$WORK/native-tblgen-build"
 if [ ! -x "$TBLGEN_BLD/bin/clang-tblgen" ]; then
-  cmake -G Ninja -S "$SRC/llvm" -B "$TBLGEN_BLD" \
+  shipyard-cmake -G Ninja -S "$SRC/llvm" -B "$TBLGEN_BLD" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
     -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="X86" \
@@ -54,7 +54,7 @@ echo "==> 3. cross-configure the HOST tools (clang;lld) as x86_64/10.9"
 # CMAKE_IGNORE_PREFIX_PATH, and the prefix guard for everything that does honour it.
 NATIVE_BLD="$WORK/native-build"
 rm -rf "$NATIVE_BLD"
-cmake -G Ninja -S "$SRC/llvm" -B "$NATIVE_BLD" \
+shipyard-cmake -G Ninja -S "$SRC/llvm" -B "$NATIVE_BLD" \
   $(mav_ccache_args) \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$NATIVE_PREFIX" \

@@ -74,9 +74,21 @@ and `identifier` are the keys that are supposed to differ.
 
 Machine-read by `artifact-facts.sh` as `- <check>:<glob> : <reason>` (one line each, plain glob):
 
-**None.** The cross pkg's lack of a 10.9.5 install floor used to need one — it runs on modern macOS
-and only *targets* 10.9, and with no updater there was no appcast to declare its minimum system
-version. `appcast-cross.xml` now declares it (`--min-os 11.0`), so conformance passes on its own.
+- shipyard-cmake-only:native-bootstrap/*: this tree bootstraps a whole toolchain from nothing on a
+  stock 10.9 box, so it cannot presuppose an installed shipyard, and its `cmake` is deliberately not
+  whichever one is on `PATH`. `build_tools()` builds cmake 3.19.8 into `toolchains/tools/bin` (the
+  newest the 10.9 libc++ can compile — 3.21+ fails) and prepends that to `PATH`; stages A–C then
+  configure LLVM 3.9.1/6.0.1/14.0.6 with exactly it, and stage D switches to the `cmake-new` it
+  builds later, named through `$CMAKE`. Writing `shipyard-cmake` in stages A–C would substitute a
+  different cmake for the one the stage was pinned to and require the pkg on a box that by
+  construction has nothing installed. None of these configures a shipyard consumer — no
+  `find_package(MavericksShipyard)` is involved — so the runtime refusal never fires here either.
+  Revisit if native-bootstrap ever builds this repo's own CMakeLists.txt, or if the shipyard pkg
+  becomes a bootstrap prerequisite.
+
+The cross pkg's lack of a 10.9.5 install floor used to need one too — it runs on modern macOS and
+only *targets* 10.9, and with no updater there was no appcast to declare its minimum system version.
+`appcast-cross.xml` now declares it (`--min-os 11.0`), so conformance passes on its own.
 
 ## Deferred from family conventions (not artifact-conformance checks)
 

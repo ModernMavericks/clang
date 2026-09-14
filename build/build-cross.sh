@@ -90,7 +90,7 @@ RUNTIME_TARGET="x86_64-apple-darwin"
 # shipped clang.cfg.
 RC="-isystem $HERE/shim/include -isystem $LEGACY_INC/LegacySupport -include $HERE/shim/aligned_alloc.h -fno-jump-tables"
 rm -rf "$BLD"
-cmake -G Ninja -S "$SRC/llvm" -B "$BLD" \
+shipyard-cmake -G Ninja -S "$SRC/llvm" -B "$BLD" \
   $(mav_ccache_args) \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$CROSS_PREFIX" \
